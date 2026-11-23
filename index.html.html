@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#F4FAFF">
+<title>시험 직전 한 장 연습장</title>
+<style>
+:root{
+  --bg:#f5f7fb;--card:#fff;--ink:#172033;--muted:#68738a;--line:#e4e9f2;
+  --primary:#3457d5;--primary-dark:#2745b8;--soft:#eef2ff;
+  --good:#16834a;--good-bg:#eaf8f0;--bad:#c43d4d;--bad-bg:#fff0f1;
+  --shadow:0 12px 35px rgba(28,45,90,.07);--radius:20px;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;line-height:1.55}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.topbar{background:rgba(255,255,255,.92);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:10;backdrop-filter:blur(12px)}
+.topbar-inner{max-width:1040px;margin:auto;padding:14px 22px;display:flex;align-items:center;justify-content:space-between;gap:14px}
+.brand{font-weight:850;letter-spacing:-.04em;font-size:18px;display:flex;align-items:center;gap:10px}
+.brand-mark{width:34px;height:34px;border-radius:11px;background:var(--primary);color:white;display:grid;place-items:center;font-weight:900}
+.nav{display:flex;gap:8px}
+.nav button{border:0;background:transparent;color:var(--muted);padding:9px 13px;border-radius:11px;font-weight:700}
+.nav button.active,.nav button:hover{background:var(--soft);color:var(--primary)}
+main{max-width:920px;margin:0 auto;padding:34px 22px 56px}
+.hero{padding:12px 2px 25px}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;background:#eaf0ff;color:var(--primary);font-size:12px;font-weight:800;padding:6px 11px;border-radius:99px}
+h1{font-size:clamp(29px,5vw,43px);line-height:1.18;letter-spacing:-.055em;margin:15px 0 10px}
+.hero p{margin:0;color:var(--muted);font-size:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:clamp(18px,3vw,28px);margin:16px 0}
+.section-head{display:flex;justify-content:space-between;align-items:flex-start;gap:15px;margin-bottom:18px}
+h2{font-size:20px;letter-spacing:-.035em;margin:0 0 4px}
+.sub{color:var(--muted);font-size:13px;margin:0}
+.tag{font-size:12px;font-weight:800;padding:6px 10px;border-radius:99px;background:#f0f2f7;color:#59647a;white-space:nowrap}
+label{display:block;font-size:13px;font-weight:800;margin:0 0 7px}
+input[type=text],textarea{width:100%;border:1px solid var(--line);border-radius:12px;padding:12px 13px;background:#fff;color:var(--ink);outline:none;transition:.15s}
+input:focus,textarea:focus{border-color:#8296f2;box-shadow:0 0 0 3px #e9edff}
+textarea{min-height:76px;resize:vertical}
+.field{margin-bottom:15px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.option-inputs{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.option-input{display:flex;align-items:center;gap:8px}
+.option-input span{width:25px;height:25px;border-radius:8px;background:var(--soft);color:var(--primary);font-weight:850;display:grid;place-items:center;flex:none;font-size:12px}
+.option-input input{min-width:0}
+.btn{border:0;border-radius:12px;padding:12px 17px;font-weight:800;transition:.15s}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.primary{background:var(--primary);color:white}.primary:hover:not(:disabled){background:var(--primary-dark);transform:translateY(-1px)}
+.secondary{background:var(--soft);color:var(--primary)}
+.ghost{background:#f2f4f8;color:#59647a}
+.danger{background:var(--bad-bg);color:var(--bad)}
+.btn-row{display:flex;gap:9px;flex-wrap:wrap;margin-top:16px}
+.full{width:100%}
+.divider{height:1px;background:var(--line);margin:21px 0}
+.hidden{display:none!important}
+.mode-tabs{display:flex;gap:8px;flex-wrap:wrap}
+.mode-tabs button{background:#f1f3f8;border:1px solid transparent;color:#59647a;padding:9px 13px;border-radius:11px;font-weight:800}
+.mode-tabs button.active{background:var(--soft);border-color:#dce3ff;color:var(--primary)}
+.question-top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:17px}
+.progress{height:7px;background:#edf0f6;border-radius:99px;overflow:hidden;margin:12px 0 22px}
+.progress>span{display:block;height:100%;background:var(--primary);border-radius:99px;transition:width .25s}
+.q-number{font-size:13px;color:var(--muted);font-weight:800}
+.q-text{font-size:clamp(18px,3vw,22px);font-weight:800;letter-spacing:-.025em;white-space:pre-wrap;margin:0 0 20px}
+.choices{display:grid;gap:10px}
+.choice{width:100%;display:flex;align-items:flex-start;gap:12px;text-align:left;background:#fff;border:1.5px solid var(--line);padding:13px 14px;border-radius:13px;color:var(--ink);font-weight:650;line-height:1.45}
+.choice:hover:not(:disabled){border-color:#9baaf0;background:#fafbff}
+.choice.selected{border-color:var(--primary);background:var(--soft)}
+.choice.correct{border-color:#7cc99a;background:var(--good-bg);color:#126a3c}
+.choice.wrong{border-color:#e69aa2;background:var(--bad-bg);color:#a52d3b}
+.choice:disabled{cursor:default}
+.choice-num{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;flex:none;background:#f0f2f7;color:#58637a;font-size:13px;font-weight:900}
+.choice.selected .choice-num{background:var(--primary);color:white}
+.choice.correct .choice-num{background:var(--good);color:white}
+.choice.wrong .choice-num{background:var(--bad);color:white}
+.feedback{margin-top:17px;padding:15px;border-radius:13px}
+.feedback.good{background:var(--good-bg);color:#126a3c}
+.feedback.bad{background:var(--bad-bg);color:#a52d3b}
+.feedback strong{display:block;margin-bottom:4px}
+.feedback p{margin:0;font-size:14px;white-space:pre-wrap}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:#f7f8fc;border:1px solid var(--line);padding:15px;border-radius:14px;text-align:center}
+.stat b{display:block;font-size:26px;letter-spacing:-.04em}
+.stat span{font-size:12px;color:var(--muted);font-weight:750}
+.result-title{text-align:center;padding:8px 0 20px}
+.result-title .score{font-size:48px;line-height:1.15;font-weight:900;letter-spacing:-.06em;color:var(--primary)}
+.result-title p{margin:8px 0 0;color:var(--muted)}
+.review-item{border:1px solid var(--line);border-radius:13px;padding:14px;margin-top:10px}
+.review-item h3{font-size:15px;margin:0 0 7px}
+.review-item p{font-size:13px;color:var(--muted);margin:4px 0}
+.notice{background:#f7f8fc;border:1px solid var(--line);border-radius:13px;padding:14px;color:var(--muted);font-size:13px}
+footer{text-align:center;color:#8992a5;font-size:12px;padding:10px 0 30px}
+.empty{text-align:center;padding:30px 12px;color:var(--muted)}
+.empty strong{display:block;color:var(--ink);margin-bottom:5px}
+@media(max-width:620px){
+ .topbar-inner{padding:11px 15px;align-items:flex-start;flex-direction:column;gap:8px}
+ .nav{width:100%}.nav button{flex:1;padding:8px 5px;font-size:13px}
+ main{padding:23px 14px 38px}
+ .grid2,.option-inputs{grid-template-columns:1fr}
+ .section-head{flex-direction:column}
+ .card{border-radius:16px}
+ .btn-row .btn{flex:1}
+ .stats{gap:7px}.stat{padding:12px 5px}.stat b{font-size:22px}
+}
+
+/* LIQUID GLASS UI THEME */
+:root{
+  --ism-color-1:#F4FAFF;
+  --ism-color-2:#C7E7F2;
+  --ism-color-3:#B89CFF;
+  --ism-color-4:#172033;
+  --ism-color-background:#F4FAFF;
+  --ism-color-foreground:#172033;
+  --ism-color-accent:#B89CFF;
+  --ism-color-surface:#E2E9EF;
+  --ism-color-muted:#9198A3;
+  --ism-color-border:#C3CAD2;
+  --ism-gutter:24px;
+  --ism-space-min:24px;
+  --ism-space-max:24px;
+  --ism-page-margin:32px;
+  --ism-line-height:1.5;
+  --ism-letter-spacing:-.02em;
+  --ism-motion-duration:180ms;
+  --ism-motion-easing:cubic-bezier(.2,0,0,1);
+  --bg:var(--ism-color-background);
+  --card:rgba(255,255,255,.62);
+  --ink:var(--ism-color-foreground);
+  --muted:#68758A;
+  --line:rgba(195,202,210,.72);
+  --primary:var(--ism-color-accent);
+  --primary-dark:#9B7CEB;
+  --soft:rgba(184,156,255,.14);
+  --good:#287B5B;
+  --good-bg:rgba(112,205,164,.16);
+  --bad:#A34B65;
+  --bad-bg:rgba(239,145,170,.16);
+  --shadow:0 16px 42px rgba(65,86,120,.12),inset 0 1px 0 rgba(255,255,255,.85);
+  --radius:24px;
+}
+html{
+  background:
+    radial-gradient(ellipse at 12% 8%,rgba(199,231,242,.8),transparent 38%),
+    radial-gradient(ellipse at 88% 18%,rgba(184,156,255,.22),transparent 35%),
+    linear-gradient(145deg,#F4FAFF,#EAF1F7 58%,#F5F1FF);
+  scroll-behavior:smooth;
+}
+body{
+  background:transparent;
+  color:var(--ink);
+  font-family:system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+  line-height:var(--ism-line-height);
+  letter-spacing:var(--ism-letter-spacing);
+}
+.topbar{
+  background:rgba(244,250,255,.68);
+  border-bottom:1px solid rgba(255,255,255,.8);
+  backdrop-filter:blur(22px) saturate(155%);
+  -webkit-backdrop-filter:blur(22px) saturate(155%);
+  box-shadow:0 5px 24px rgba(75,93,125,.06);
+}
+.topbar-inner{padding-top:16px;padding-bottom:16px}
+.brand{color:#26334A;font-weight:850;letter-spacing:-.035em}
+.brand-mark{
+  border-radius:12px!important;
+  color:#fff;
+  background:linear-gradient(145deg,#C9B5FF,#9E83E9);
+  box-shadow:0 5px 14px rgba(150,121,225,.28),inset 0 1px 0 rgba(255,255,255,.65);
+}
+.nav button{
+  border:1px solid transparent;
+  border-radius:13px!important;
+  color:#68758A;
+  transition:all var(--ism-motion-duration) var(--ism-motion-easing);
+}
+.nav button.active,.nav button:hover{
+  background:rgba(255,255,255,.68);
+  border-color:rgba(255,255,255,.95);
+  color:#7459B5;
+  box-shadow:0 4px 14px rgba(91,106,143,.08),inset 0 1px 0 white;
+}
+main{padding-top:38px}
+.eyebrow{
+  background:rgba(255,255,255,.56);
+  border:1px solid rgba(255,255,255,.92);
+  color:#765CB5;
+  border-radius:99px!important;
+  box-shadow:0 4px 14px rgba(91,106,143,.07),inset 0 1px 0 white;
+  backdrop-filter:blur(12px);
+}
+h1{color:#26334A;letter-spacing:-.055em}
+h2{color:#39445B}
+.hero p,.sub,.q-number{color:var(--muted)}
+.card{
+  background:rgba(255,255,255,.58);
+  border:1px solid rgba(255,255,255,.92);
+  border-radius:var(--radius)!important;
+  box-shadow:var(--shadow);
+  backdrop-filter:blur(22px) saturate(145%);
+  -webkit-backdrop-filter:blur(22px) saturate(145%);
+}
+.tag{
+  background:rgba(199,231,242,.42);
+  border:1px solid rgba(255,255,255,.9);
+  color:#52677B;
+  border-radius:99px!important;
+}
+label{color:#47536A}
+input[type=text],textarea,#correctAnswer{
+  background:rgba(255,255,255,.72)!important;
+  color:var(--ink)!important;
+  border:1px solid rgba(173,187,205,.65)!important;
+  border-radius:14px!important;
+  box-shadow:inset 0 1px 3px rgba(57,72,99,.04);
+  transition:all var(--ism-motion-duration) var(--ism-motion-easing);
+}
+input::placeholder,textarea::placeholder{color:#9AA5B4}
+input:focus,textarea:focus,#correctAnswer:focus{
+  border-color:#B89CFF!important;
+  box-shadow:0 0 0 4px rgba(184,156,255,.16),0 4px 16px rgba(119,99,173,.08)!important;
+  outline:none;
+}
+.option-input span,.choice-num{
+  border-radius:9px!important;
+  background:rgba(199,231,242,.55);
+  color:#52677B;
+}
+.btn{
+  border-radius:14px!important;
+  font-weight:800;
+  border:1px solid rgba(255,255,255,.88);
+  box-shadow:0 5px 15px rgba(66,83,119,.10),inset 0 1px 0 rgba(255,255,255,.72);
+  transition:all var(--ism-motion-duration) var(--ism-motion-easing);
+}
+.btn:active:not(:disabled){transform:translateY(1px);box-shadow:0 2px 7px rgba(66,83,119,.10)}
+.primary{
+  background:linear-gradient(135deg,#C9B5FF,#A88DEB);
+  color:#fff;
+  border-color:rgba(255,255,255,.78);
+}
+.primary:hover:not(:disabled){
+  background:linear-gradient(135deg,#BCA4FA,#9879E3);
+  transform:translateY(-1px);
+}
+.secondary{
+  background:rgba(199,231,242,.48);
+  color:#48677B;
+  border-color:rgba(255,255,255,.9);
+}
+.ghost{background:rgba(255,255,255,.58);color:#657187}
+.danger{
+  background:rgba(239,145,170,.15);
+  color:#A34B65;
+  border-color:rgba(239,145,170,.35);
+}
+.divider{background:rgba(195,202,210,.65)}
+.mode-tabs button{
+  border-radius:13px!important;
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(195,202,210,.42);
+  color:#68758A;
+}
+.mode-tabs button.active{
+  background:rgba(184,156,255,.16);
+  border-color:rgba(184,156,255,.55);
+  color:#7459B5;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+.progress{
+  height:9px;
+  background:rgba(195,202,210,.38);
+  border-radius:99px!important;
+  overflow:hidden;
+}
+.progress>span{
+  background:linear-gradient(90deg,#C7E7F2,#B89CFF);
+  border-radius:99px!important;
+  transition:width var(--ism-motion-duration) var(--ism-motion-easing);
+}
+.q-text{color:#26334A}
+.choice{
+  background:rgba(255,255,255,.56);
+  border:1px solid rgba(195,202,210,.72);
+  border-radius:16px!important;
+  color:#344158;
+  transition:all var(--ism-motion-duration) var(--ism-motion-easing);
+}
+.choice:hover:not(:disabled){
+  border-color:rgba(184,156,255,.65);
+  background:rgba(255,255,255,.82);
+  box-shadow:0 5px 16px rgba(91,106,143,.07);
+}
+.choice.selected{
+  border-color:#B89CFF;
+  background:rgba(184,156,255,.15);
+  color:#624B9A;
+  box-shadow:0 0 0 3px rgba(184,156,255,.10);
+}
+.choice.correct{
+  border-color:rgba(40,123,91,.48);
+  background:var(--good-bg);
+  color:#287B5B;
+}
+.choice.wrong{
+  border-color:rgba(163,75,101,.42);
+  background:var(--bad-bg);
+  color:#A34B65;
+}
+.choice-num{border:1px solid rgba(195,202,210,.5)}
+.choice.selected .choice-num{background:#B89CFF;color:#fff}
+.choice.correct .choice-num{background:#287B5B;color:#fff}
+.choice.wrong .choice-num{background:#A34B65;color:#fff}
+.feedback{
+  border:1px solid;
+  border-radius:16px!important;
+  backdrop-filter:blur(12px);
+}
+.feedback.good{background:var(--good-bg);border-color:rgba(40,123,91,.32);color:#287B5B}
+.feedback.bad{background:var(--bad-bg);border-color:rgba(163,75,101,.28);color:#A34B65}
+.stat{
+  background:rgba(255,255,255,.52);
+  border:1px solid rgba(255,255,255,.92);
+  border-radius:17px!important;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+.stat b{color:#6E58A7}
+.stat span{color:var(--muted)}
+.result-title .score{color:#8D70D1}
+.result-title p{color:var(--muted)}
+.review-item{
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(195,202,210,.62);
+  border-radius:15px!important;
+}
+.review-item h3{color:#39445B}
+.review-item p{color:#68758A}
+.notice{
+  background:rgba(255,255,255,.48);
+  border:1px solid rgba(195,202,210,.62);
+  border-radius:15px!important;
+  color:#68758A;
+}
+.empty{color:#68758A}
+.empty strong{color:#39445B}
+footer{color:#8995A7}
+@media(max-width:620px){
+  .topbar{position:sticky}
+  .topbar-inner{padding:12px 15px}
+  .brand{font-size:15px}
+  main{padding:22px 14px 38px}
+  .card{border-radius:20px!important}
+  .btn{padding:11px 13px;font-size:13px}
+  .choice{padding:12px 11px}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;transition:none!important}
+}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand"><span class="brand-mark">한</span> 시험 직전 한 장 연습장</div>
+    <nav class="nav" aria-label="주요 메뉴">
+      <button class="active" data-view="home">문제 풀기</button>
+      <button data-view="wrong">오답 복습 <span id="wrongNavCount"></span></button>
+      <button data-view="guide">이용 안내</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="hero">
+    <span class="eyebrow">✦ 시험 직전 마지막 점검</span>
+    <h1>시험 직전, 마지막 점검!</h1>
+    <p>문제를 풀고 바로 채점한 뒤, 틀린 문제만 다시 풀어 보세요.</p>
+  </section>
+
+  <section id="homeView">
+    <section class="card" id="editorCard">
+      <div class="section-head">
+        <div><h2>나만의 문제 만들기</h2><p class="sub">문제와 보기, 정답을 입력하면 바로 연습할 수 있어요.</p></div>
+        <span class="tag">5지선다</span>
+      </div>
+      <div class="field">
+        <label for="subject">과목명</label>
+        <input id="subject" type="text" placeholder="예: 전기치료학">
+      </div>
+      <div class="field">
+        <label for="question">문제 내용</label>
+        <textarea id="question" placeholder="문제 내용을 입력하세요."></textarea>
+      </div>
+      <div class="field">
+        <label>보기 ①~⑤</label>
+        <div class="option-inputs" id="optionInputs">
+          <div class="option-input"><span>①</span><input type="text" aria-label="보기 1" placeholder="첫 번째 보기"></div>
+          <div class="option-input"><span>②</span><input type="text" aria-label="보기 2" placeholder="두 번째 보기"></div>
+          <div class="option-input"><span>③</span><input type="text" aria-label="보기 3" placeholder="세 번째 보기"></div>
+          <div class="option-input"><span>④</span><input type="text" aria-label="보기 4" placeholder="네 번째 보기"></div>
+          <div class="option-input"><span>⑤</span><input type="text" aria-label="보기 5" placeholder="다섯 번째 보기"></div>
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="field">
+          <label for="correctAnswer">정답 번호</label>
+          <select id="correctAnswer" style="width:100%;padding:12px;border:1px solid var(--line);border-radius:12px;background:white;color:var(--ink)">
+            <option value="">정답 선택</option><option value="0">①</option><option value="1">②</option><option value="2">③</option><option value="3">④</option><option value="4">⑤</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="explanation">해설</label>
+          <input id="explanation" type="text" placeholder="정답인 이유를 입력하세요.">
+        </div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="addQuestion">문제 추가하기</button>
+        <button class="btn secondary" id="loadSample">예시 문제 불러오기</button>
+        <button class="btn ghost" id="clearForm">입력 지우기</button>
+      </div>
+      <div class="divider"></div>
+      <div class="section-head">
+        <div><h2>연습할 문제</h2><p class="sub" id="bankSummary">아직 등록된 문제가 없습니다.</p></div>
+        <span class="tag" id="bankCount">0문제</span>
+      </div>
+      <div id="bankList" class="empty"><strong>아직 문제가 없어요.</strong>위 입력칸에서 첫 문제를 추가하거나 예시 문제를 불러와 보세요.</div>
+      <div class="btn-row">
+        <button class="btn primary full" id="startQuiz" disabled>문제 풀이 시작</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="quizCard">
+      <div class="question-top">
+        <span class="q-number" id="questionCounter">문제 1 / 1</span>
+        <span class="tag" id="quizSubject">과목</span>
+      </div>
+      <div class="progress"><span id="progressBar" style="width:0%"></span></div>
+      <p class="q-text" id="questionText"></p>
+      <div class="choices" id="choices"></div>
+      <div id="feedback"></div>
+      <div class="btn-row">
+        <button class="btn primary full" id="nextQuestion" disabled>정답 확인</button>
+      </div>
+    </section>
+
+    <section class="card hidden" id="resultCard">
+      <div class="result-title">
+        <span class="eyebrow">연습 완료</span>
+        <h2 style="margin:14px 0 5px">수고했어요!</h2>
+        <div class="score" id="scoreText">0점</div>
+        <p id="resultMessage">결과를 확인해 보세요.</p>
+      </div>
+      <div class="stats">
+        <div class="stat"><b id="correctCount">0</b><span>정답</span></div>
+        <div class="stat"><b id="incorrectCount">0</b><span>오답</span></div>
+        <div class="stat"><b id="accuracy">0%</b><span>정답률</span></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn primary" id="retryWrong">틀린 문제 다시 풀기</button>
+        <button class="btn secondary" id="retryAll">전체 문제 다시 풀기</button>
+        <button class="btn ghost" id="backToEditor">문제 목록으로</button>
+      </div>
+      <div id="resultWrongList"></div>
+    </section>
+  </section>
+
+  <section id="wrongView" class="hidden">
+    <section class="card">
+      <div class="section-head">
+        <div><h2>오답 복습</h2><p class="sub">최근 풀이에서 틀린 문제를 모아 다시 풀 수 있어요.</p></div>
+        <span class="tag" id="wrongCountTag">0문제</span>
+      </div>
+      <div id="wrongList" class="empty"><strong>아직 복습할 오답이 없어요.</strong>문제를 풀고 틀린 문제가 생기면 여기에 모아둘게요.</div>
+      <div class="btn-row"><button class="btn primary full" id="startWrong" disabled>오답 다시 풀기</button></div>
+    </section>
+  </section>
+
+  <section id="guideView" class="hidden">
+    <section class="card">
+      <h2>이용 방법</h2>
+      <div class="review-item"><h3>① 문제 입력</h3><p>과목명, 문제, 보기 5개, 정답과 해설을 입력하고 문제를 추가하세요.</p></div>
+      <div class="review-item"><h3>② 문제 풀이</h3><p>한 번에 한 문제씩 풀고 보기 하나를 선택하세요. 정답 확인을 누르면 바로 채점돼요.</p></div>
+      <div class="review-item"><h3>③ 결과 확인</h3><p>모든 문제를 풀면 점수, 정답 수, 오답 수와 정답률을 확인할 수 있어요.</p></div>
+      <div class="review-item"><h3>④ 오답 복습</h3><p>틀린 문제만 모아서 다시 풀 수 있어요. 복습 결과도 새 점수로 확인할 수 있습니다.</p></div>
+      <div class="divider"></div>
+      <div class="notice">안내: 이 페이지는 서버 없이 브라우저에서 작동합니다. 입력한 문제와 풀이 기록은 현재 페이지를 연 동안에만 보관되며, 새로고침하거나 페이지를 닫으면 사라집니다. 중요한 문제는 별도로 저장해 두세요.</div>
+    </section>
+  </section>
+</main>
+<footer>© 2026 시험 직전 한 장 연습장 · 나만의 시험 대비 연습장</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+const labels = ["①","②","③","④","⑤"];
+let questions = [];
+let wrongQuestions = [];
+let session = [];
+let answers = [];
+let current = 0;
+let selected = null;
+let answered = false;
+let quizMode = "all";
+let lastResults = [];
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[ch]));
+}
+function updateBank(){
+  $("bankCount").textContent = `${questions.length}문제`;
+  $("bankSummary").textContent = questions.length ? `${questions.length}개의 문제가 준비되어 있어요.` : "아직 등록된 문제가 없습니다.";
+  $("startQuiz").disabled = questions.length === 0;
+  if(!questions.length){
+    $("bankList").className = "empty";
+    $("bankList").innerHTML = "<strong>아직 문제가 없어요.</strong>위 입력칸에서 첫 문제를 추가하거나 예시 문제를 불러와 보세요.";
+  }else{
+    $("bankList").className = "";
+    $("bankList").innerHTML = questions.map((q,i)=>`
+      <div class="review-item">
+        <h3>${i+1}. ${escapeHTML(q.text)}</h3>
+        <p>${escapeHTML(q.subject || "과목 미지정")} · 정답 ${labels[q.answer]}</p>
+        <button class="btn danger" style="padding:7px 10px;font-size:12px;margin-top:6px" data-delete="${i}">삭제</button>
+      </div>`).join("");
+    document.querySelectorAll("[data-delete]").forEach(btn=>btn.addEventListener("click",()=>{
+      questions.splice(Number(btn.dataset.delete),1); updateBank();
+    }));
+  }
+}
+function clearForm(){
+  $("subject").value="";$("question").value="";
+  document.querySelectorAll("#optionInputs input").forEach(input=>input.value="");
+  $("correctAnswer").value="";$("explanation").value="";
+}
+$("addQuestion").addEventListener("click",()=>{
+  const subject=$("subject").value.trim();
+  const text=$("question").value.trim();
+  const options=[...document.querySelectorAll("#optionInputs input")].map(input=>input.value.trim());
+  const answer=$("correctAnswer").value;
+  const explanation=$("explanation").value.trim();
+  if(!text || options.some(v=>!v) || answer===""){
+    alert("문제 내용, 보기 5개, 정답 번호를 모두 입력해 주세요.");return;
+  }
+  questions.push({subject,text,options,answer:Number(answer),explanation});
+  clearForm();updateBank();
+});
+$("clearForm").addEventListener("click",clearForm);
+$("loadSample").addEventListener("click",()=>{
+  const samples=[
+    {subject:"한국사",text:"다음 중 고려 광종의 업적으로 옳은 것은?",options:["노비안검법 실시","과거제 실시","전시과 제도 마련","삼국사기 편찬","팔만대장경 조판 시작"],answer:1,explanation:"광종은 958년 과거제를 실시해 유교적 소양을 갖춘 인재를 관리로 등용하고 왕권을 강화하려 했습니다."},
+    {subject:"한국사",text:"조선 세종 때의 업적으로 옳지 않은 것은?",options:["훈민정음 창제","집현전 운영","측우기 제작","4군 6진 개척","경국대전 완성"],answer:4,explanation:"경국대전은 세조 때 편찬을 시작해 성종 때 완성·반포했습니다."},
+    {subject:"한국사",text:"다음 중 신라 진흥왕의 업적으로 옳은 것은?",options:["불국사 건립","첨성대 건립","화랑도 정비","녹읍 폐지","독서삼품과 실시"],answer:2,explanation:"진흥왕은 화랑도를 국가적 조직으로 정비하고 영토를 크게 확장했습니다."}
+  ];
+  questions.push(...samples);updateBank();
+});
+function showView(view){
+  ["home","wrong","guide"].forEach(name=>{
+    $(name+"View").classList.toggle("hidden",name!==view);
+  });
+  $("hero").classList.toggle("hidden",view!=="home");
+  document.querySelectorAll(".nav button").forEach(btn=>btn.classList.toggle("active",btn.dataset.view===view));
+}
+document.querySelectorAll(".nav button").forEach(btn=>btn.addEventListener("click",()=>showView(btn.dataset.view)));
+function beginQuiz(list,mode){
+  if(!list.length){alert(mode==="wrong"?"복습할 오답이 없습니다.":"먼저 문제를 추가해 주세요.");return;}
+  session=list.slice();quizMode=mode;answers=[];current=0;selected=null;answered=false;
+  $("editorCard").classList.add("hidden");$("resultCard").classList.add("hidden");$("quizCard").classList.remove("hidden");
+  showView("home");renderQuestion();
+}
+function renderQuestion(){
+  const q=session[current];selected=null;answered=false;
+  $("questionCounter").textContent=`문제 ${current+1} / ${session.length}`;
+  $("quizSubject").textContent=q.subject||"연습 문제";
+  $("progressBar").style.width=`${(current/session.length)*100}%`;
+  $("questionText").textContent=q.text;
+  $("feedback").innerHTML="";
+  $("choices").innerHTML=q.options.map((option,i)=>`
+    <button class="choice" data-choice="${i}">
+      <span class="choice-num">${labels[i]}</span><span>${escapeHTML(option)}</span>
+    </button>`).join("");
+  document.querySelectorAll("[data-choice]").forEach(btn=>btn.addEventListener("click",()=>{
+    if(answered)return;
+    selected=Number(btn.dataset.choice);
+    document.querySelectorAll(".choice").forEach(el=>el.classList.toggle("selected",Number(el.dataset.choice)===selected));
+    $("nextQuestion").disabled=false;$("nextQuestion").textContent="정답 확인";
+  }));
+  $("nextQuestion").disabled=true;$("nextQuestion").textContent="정답 확인";
+}
+$("nextQuestion").addEventListener("click",()=>{
+  if(!answered){
+    if(selected===null)return;
+    answered=true;
+    const q=session[current],correct=selected===q.answer;
+    answers.push({question:q,selected,correct});
+    document.querySelectorAll(".choice").forEach(btn=>{
+      const n=Number(btn.dataset.choice);btn.disabled=true;
+      if(n===q.answer)btn.classList.add("correct");
+      if(n===selected && !correct)btn.classList.add("wrong");
+    });
+    $("feedback").innerHTML=`<div class="feedback ${correct?"good":"bad"}"><strong>${correct?"정답입니다!":"아쉽지만 오답이에요."} 정답은 ${labels[q.answer]}입니다.</strong><p>${escapeHTML(q.explanation||"등록된 해설이 없습니다.")}</p></div>`;
+    $("nextQuestion").textContent=current===session.length-1?"결과 보기":"다음 문제";
+  }else{
+    current++;
+    if(current<session.length)renderQuestion();else showResults();
+  }
+});
+function showResults(){
+  $("quizCard").classList.add("hidden");$("resultCard").classList.remove("hidden");
+  const correct=answers.filter(a=>a.correct).length;
+  const wrong=answers.length-correct;
+  const percent=Math.round(correct/answers.length*100);
+  $("scoreText").textContent=`${percent}점`;
+  $("resultMessage").textContent=`총 ${answers.length}문제 중 ${correct}문제를 맞혔어요.`;
+  $("correctCount").textContent=correct;$("incorrectCount").textContent=wrong;$("accuracy").textContent=`${percent}%`;
+  const wrongNow=answers.filter(a=>!a.correct).map(a=>a.question);
+  wrongQuestions=wrongNow;
+  $("wrongNavCount").textContent=wrongQuestions.length?`(${wrongQuestions.length})`:"";
+  $("retryWrong").disabled=wrongQuestions.length===0;
+  $("resultWrongList").innerHTML=wrongNow.length?`<div class="divider"></div><h2>이번에 틀린 문제</h2>`+wrongNow.map((q,i)=>`<div class="review-item"><h3>${i+1}. ${escapeHTML(q.text)}</h3><p>정답: ${labels[q.answer]} ${escapeHTML(q.options[q.answer])}</p><p>${escapeHTML(q.explanation||"해설 없음")}</p></div>`).join(""):`<div class="notice" style="margin-top:18px">모든 문제를 맞혔어요! 훌륭합니다.</div>`;
+  lastResults=answers.slice();
+  $("progressBar").style.width="100%";
+  updateWrongView();
+}
+function updateWrongView(){
+  $("wrongCountTag").textContent=`${wrongQuestions.length}문제`;
+  $("startWrong").disabled=wrongQuestions.length===0;
+  $("wrongNavCount").textContent=wrongQuestions.length?`(${wrongQuestions.length})`:"";
+  if(!wrongQuestions.length){
+    $("wrongList").className="empty";
+    $("wrongList").innerHTML="<strong>아직 복습할 오답이 없어요.</strong>문제를 풀고 틀린 문제가 생기면 여기에 모아둘게요.";
+  }else{
+    $("wrongList").className="";
+    $("wrongList").innerHTML=wrongQuestions.map((q,i)=>`<div class="review-item"><h3>${i+1}. ${escapeHTML(q.text)}</h3><p>과목: ${escapeHTML(q.subject||"미지정")}</p><p>정답: ${labels[q.answer]} ${escapeHTML(q.options[q.answer])}</p></div>`).join("");
+  }
+}
+$("startQuiz").addEventListener("click",()=>beginQuiz(questions,"all"));
+$("retryAll").addEventListener("click",()=>beginQuiz(questions,"all"));
+$("retryWrong").addEventListener("click",()=>beginQuiz(wrongQuestions,"wrong"));
+$("startWrong").addEventListener("click",()=>beginQuiz(wrongQuestions,"wrong"));
+$("backToEditor").addEventListener("click",()=>{
+  $("resultCard").classList.add("hidden");$("editorCard").classList.remove("hidden");showView("home");
+});
+updateBank();updateWrongView();
+</script>
+</body>
+</html>
